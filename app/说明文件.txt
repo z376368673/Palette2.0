@@ -1,0 +1,26 @@
+
+
+
+
+
+包名：con.hzhl.jmdz
+签名：3d9dee357ded88b4c486ae057cc60e8b
+
+微信AppID： wxcbb0f8a815203783
+
+友盟appKey: 5aebcce8f29d981c2f0000d3
+
+
+//签名配置
+    signingConfigs {
+        def alias = 'haobiji'
+        def password = 'android123'
+        def passwordStore = 'android123'
+        def filePath = 'hao.jks'
+        debug {
+            keyAlias alias
+            keyPassword password
+            storeFile file(filePath)
+            storePassword(passwordStore)
+        }
+    }

@@ -1,0 +1,57 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "25.0.2"
+
+    defaultConfig {
+        applicationId "con.hzhl.jmdz"
+        minSdkVersion 16
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+    }
+    //签名配置
+    signingConfigs {
+        def alias = 'haobiji'
+        def password = 'android123'
+        def passwordStore = 'android123'
+        def filePath = 'hao.jks'
+        debug {
+            keyAlias alias
+            keyPassword password
+            storeFile file(filePath)
+            storePassword(passwordStore)
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.debug
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            minifyEnabled false
+            signingConfig signingConfigs.debug
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+//    compile files('libs/umeng-share-core-6.9.1.jar')
+//    compile files('libs/umeng-sharetool-6.9.1.jar')
+      compile files('libs/umeng-common-1.5.1.jar')
+//    compile files('libs/umeng-debug-1.0.0.jar')
+    compile 'com.android.support:appcompat-v7:23.0.1'
+    compile 'com.github.bumptech.glide:glide:3.7.0'
+    //友盟分享
+    compile 'com.umeng.sdk:share-core:latest.integration'
+    compile 'com.umeng.sdk:shareboard-widget:latest.integration'
+    //微信分享
+    compile 'com.umeng.sdk:share-wechat:latest.integration'
+
+}

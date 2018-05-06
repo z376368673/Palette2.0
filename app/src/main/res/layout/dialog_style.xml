@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/ll_style"
+        android:layout_width="wrap_content"
+        android:layout_height="200dp"
+        android:background="@drawable/shape_bg"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:text="颜色"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
+
+            <View
+                android:id="@+id/color1"
+                style="@style/corners_view"
+                android:background="@drawable/shape_bg_round_1"
+                android:tag="#000000" />
+
+            <View
+                android:id="@+id/color2"
+                android:tag="#E93B3B"
+                style="@style/corners_view"
+                android:background="@drawable/shape_bg_round_2" />
+
+            <View
+                android:id="@+id/color3"
+                style="@style/corners_view"
+                android:tag="#E9CE3B"
+                android:background="@drawable/shape_bg_round_3" />
+
+            <View
+                android:id="@+id/color4"
+                style="@style/corners_view"
+                android:tag="#4DB941"
+                android:background="@drawable/shape_bg_round_4" />
+
+            <View
+                android:id="@+id/color5"
+                style="@style/corners_view"
+                android:tag="#35A1F5"
+                android:background="@drawable/shape_bg_round_5" />
+
+            <View
+                android:id="@+id/color6"
+                style="@style/corners_view"
+                android:tag="#DC6A37"
+                android:background="@drawable/shape_bg_round_6" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:text="粗细"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
+
+            <SeekBar
+                android:id="@+id/seekBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/seekbar_style"
+                android:max="20" />
+        </LinearLayout>
+
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#ff9800</color>
+    <color name="colorPrimaryDark">#fb8c00</color>
+    <color name="colorAccent">#fb8c00</color>
+
+    <drawable name="toolbar_bg">#30000000</drawable>
+
+
+    <color name="transparent">#00000000</color>
+    <color name="black_5">#55000000</color>
+
+    <color name="black">#000000</color>
+    <color name="white">#ffffff</color>
+
+    <color name="color_1">#000000</color>
+    <color name="color_2">#E93B3B</color>
+    <color name="color_3">#E9CE3B</color>
+    <color name="color_4">#4DB941</color>
+    <color name="color_5">#35A1F5</color>
+    <color name="color_6">#DC6A37</color>
+</resources>
