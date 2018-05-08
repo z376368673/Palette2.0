@@ -8,6 +8,8 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -19,6 +21,7 @@ import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -26,6 +29,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import java.io.File;
 import java.util.List;
 
+import con.hzhl.jmdz.Utils.BaseDialog;
 import con.hzhl.jmdz.Utils.BitmapUtlis;
 import con.hzhl.jmdz.Utils.FileData;
 import con.hzhl.jmdz.Utils.PFile;
@@ -34,7 +38,9 @@ import con.hzhl.jmdz.Utils.PFile;
  * Created by apple on 2018/4/26.
  */
 
-public class CollectionListActivity extends BaseActivity implements AdapterView.OnItemClickListener {
+public class CollectionListActivity extends BaseActivity implements AdapterView.OnItemClickListener,AdapterView.OnItemLongClickListener {
+
+    private static final int DelectFile = 1;
 
     GridView gridView;
     CollectAdapter adapter;
@@ -57,6 +63,7 @@ public class CollectionListActivity extends BaseActivity implements AdapterView.
         adapter = new CollectAdapter(this);
         gridView.setAdapter(adapter);
         gridView.setOnItemClickListener(this);
+        gridView.setOnItemLongClickListener(this);
         iv_add.setOnClickListener(this);
         //权限申请
         if (Build.VERSION.SDK_INT >= 23) {
@@ -110,6 +117,46 @@ public class CollectionListActivity extends BaseActivity implements AdapterView.
         intent.putExtra("name", file.getName());
         intent.putExtra("path", file.getPath());
         startActivityForResult(intent, 1001);
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+        final PFile pFile = (PFile) adapterView.getAdapter().getItem(i);
+        if (pFile!=null){
+            BaseDialog.dialogStyle1(mContext, "您确定要删除此文件？", "删除", "取消", new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (view.getId()==R.id.dialog_confirm) {
+                        delect(pFile);
+                    }
+                }
+            });
+
+
+        }
+        return true;
+    }
+    Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (msg.what==DelectFile){
+                initData();
+            }
+        }
+    };
+    private void delect(final PFile pFile){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                boolean isdelect = new FileData(mContext).delectFile(pFile);
+                if (isdelect)
+                    handler.sendEmptyMessage(DelectFile);
+                else {
+                    Toast.makeText(mContext, "删除失败", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }).start();
     }
 
     /**

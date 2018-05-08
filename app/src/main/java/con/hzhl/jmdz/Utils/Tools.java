@@ -39,7 +39,7 @@ public class Tools {
         }
         if (!appDir.exists())appDir.mkdirs();
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss", Locale.getDefault());
-        String fileName = df.format(new Date())+".jpg";;
+        String fileName = df.format(new Date())+".jpg";
         File file = new File(appDir, fileName);
         FileOutputStream fos = null;
         try {
@@ -110,6 +110,93 @@ public class Tools {
         return null;
     }
 
+    /**
+     * 保存图片
+     *
+     * @param mContext
+     * @param bmp
+     * @param quality
+     * @return
+     */
+    public static String savesImage(Context mContext, String fileName ,Bitmap bmp, int quality) {
+        if (bmp == null) {
+            return null;
+        }
+        File appDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        if (appDir == null) {
+            return null;
+        }
+        if (!appDir.exists())appDir.mkdirs();
+
+        File file = new File(appDir, fileName+".jpg");
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(file);
+            bmp.compress(Bitmap.CompressFormat.JPEG, quality, fos);
+            fos.flush();
+            FileData fileData = new FileData(mContext);
+            fileData.saves(new PFile(fileName,file.getAbsolutePath()));
+            return file.getAbsolutePath();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (fos != null) {
+                try {
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return null;
+    }
+
+
+
+
+    /**
+     * 保存图片
+     *
+     * @param mContext
+     * @param bmp
+     * @param quality
+     * @return
+     */
+    public static String buildImage(Context mContext, Bitmap bmp, int quality) {
+        if (bmp == null) {
+            return null;
+        }
+        File appDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        if (appDir == null) {
+            return null;
+        }
+        if (!appDir.exists())appDir.mkdirs();
+        String fileName = "share_tmp.jpg";
+        File file = new File(appDir, fileName);
+        if (file.exists())file.delete();
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(file);
+            bmp.compress(Bitmap.CompressFormat.JPEG, quality, fos);
+            fos.flush();
+            return file.getAbsolutePath();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (fos != null) {
+                try {
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return null;
+    }
 
     public static Bitmap loadBitmapFromView(View v) {
         if (v == null) {

@@ -2,6 +2,7 @@ package con.hzhl.jmdz.Utils;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 
 import org.w3c.dom.Text;
 
@@ -96,6 +97,7 @@ public class FileData {
                 String path = PrefUtils.getString(context, name, "");
                 if (!TextUtils.isEmpty(path))
                 fileList.add(new PFile(name,path));
+                Log.e(name,path);
             }
         }
         return  fileList;
@@ -136,14 +138,29 @@ public class FileData {
      * @return
      */
     public boolean saveAs(PFile pFile) {
-            //如果文件存在 则保存
-            if (isExist(pFile)){
-                //再把文件信息保存进去
-                PrefUtils.putString(context, pFile.getName(), pFile.getPath());
-                return true;
-            }else {
-                return false;
-            }
+        //如果文件存在 则保存
+        if (isExist(pFile)){
+            //再把文件信息保存进去
+            PrefUtils.putString(context, pFile.getName(), pFile.getPath());
+            return true;
+        }else {
+            return false;
+        }
+
+    }
+
+    public boolean saves(PFile pFile) {
+        //先查询有没有这个文件名，
+        if (!isExist(pFile)) {
+            //如果没有，先把文件名保存在keyList里面
+            saveKey(pFile);
+            //再把文件信息保存进去
+            PrefUtils.putString(context, pFile.getName(), pFile.getPath());
+        } else {
+            //再把文件信息保存进去
+            PrefUtils.putString(context, pFile.getName(), pFile.getPath());
+        }
+        return true;
 
     }
 

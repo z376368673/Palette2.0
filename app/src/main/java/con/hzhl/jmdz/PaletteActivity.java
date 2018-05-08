@@ -37,6 +37,9 @@ import con.hzhl.jmdz.Utils.StyleDialog;
 import con.hzhl.jmdz.Utils.Tools;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class PaletteActivity extends BaseActivity implements View.OnClickListener, PaletteView.Callback, Handler.Callback {
 
@@ -52,26 +55,31 @@ public class PaletteActivity extends BaseActivity implements View.OnClickListene
     private static final int MSG_DELE_SUCCESS_ADN_FINSH = 4;
     private static final int MSG_SHARE = 5;
     private Handler mHandler;
-    private View smaller, close, share, save;
+    private View setting, close, share, save;
 
     private PFile pFile;
-
+    private String fileName="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         hidBottomUIAndStatus();
         setContentView(R.layout.activity_palettr);
         initView();
+
     }
 
     /**
      * 初始化view
      */
     private void initView() {
+
         String name = getIntent().getStringExtra("name");
         String path = getIntent().getStringExtra("path");
         if (!TextUtils.isEmpty(name) && !TextUtils.isEmpty(path)) {
             pFile = new PFile(name, path);
+        }else {
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss", Locale.getDefault());
+            fileName = df.format(new Date());
         }
 
         mPaletteView = (PaletteView) findViewById(R.id.palette);
@@ -97,13 +105,13 @@ public class PaletteActivity extends BaseActivity implements View.OnClickListene
         mClearView.setOnClickListener(this);
 
 
-        smaller = findViewById(R.id.iv_smaller);
+        setting = findViewById(R.id.iv_setting);
         close = findViewById(R.id.iv_close);
         share = findViewById(R.id.iv_share);
         save = findViewById(R.id.iv_save);
 
 
-        smaller.setOnClickListener(this);
+        setting.setOnClickListener(this);
         close.setOnClickListener(this);
         share.setOnClickListener(this);
         save.setOnClickListener(this);
@@ -159,17 +167,23 @@ public class PaletteActivity extends BaseActivity implements View.OnClickListene
         new Thread(new Runnable() {
             @Override
             public void run() {
+                // 保存图片有问题 saveas 这里有问题
                 Bitmap bm = mPaletteView.buildBitmap();
                 if (pFile == null) {
-                    Tools.saveImage(mContext, bm, 100);
+                    Tools.savesImage(mContext, fileName,bm, 100);
                 } else {
-                    Tools.saveImage(mContext, pFile.getName(), bm, 100);
+                    Tools.savesImage(mContext, pFile.getName(), bm, 100);
                 }
                 mHandler.sendEmptyMessage(type);
             }
         }).start();
     }
 
+    @Override
+    public void onBackPressed() {
+
+        super.onBackPressed();
+    }
 
     @Override
     public void onUndoRedoStatusChanged() {
@@ -180,6 +194,7 @@ public class PaletteActivity extends BaseActivity implements View.OnClickListene
 
     @Override
     public void onClick(View v) {
+
         switch (v.getId()) {
             case R.id.undo://撤销
                 mPaletteView.undo();
@@ -202,41 +217,38 @@ public class PaletteActivity extends BaseActivity implements View.OnClickListene
                 break;
             case R.id.iv_save://保存
                 saveFile(MSG_SAVE_SUCCESS);
-//                BaseDialog.dialogStyle1(mContext, "您要保存此笔记？", "确定", "取消", new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        if (view.getId()==R.id.dialog_confirm) {
-//                                saveFile(MSG_SAVE_SUCCESS);
-//                        }
-//                    }
-//                });
-
                 break;
             case R.id.iv_share: //分享
+                //异步生成图片，弹出分享框
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Bitmap bm = mPaletteView.buildBitmap();
+                        String path = Tools.buildImage(mContext, bm, 50);
+                        mHandler.obtainMessage(MSG_SHARE,path).sendToTarget();
+                    }
+                }).start();
+                break;
+            case R.id.iv_setting://设置
                 StyleDialog styleDialog = new StyleDialog(this);
                 styleDialog.setHandler(mHandler);
                 styleDialog.setSeekBar((int) mPaletteView.getPenRawSize());
                 styleDialog.show();
                 break;
-            case R.id.iv_smaller://最小化
-                saveFile(MSG_SAVE_SUCCESS_ADN_FINSH);
-                break;
             case R.id.iv_close://关闭
-                setResult(RESULT_OK);
-                finish();
-//                BaseDialog.dialogStyle1(mContext, "您要删除此笔记？", "确定", "取消", new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        if (view.getId()==R.id.dialog_confirm) {
-//                            if (pFile!=null){
-//                                finish();
-//                            }else {
-//                                finish();
-//                            }
-//
-//                        }
-//                    }
-//                });
+//                setResult(RESULT_OK);
+//                finish();
+                BaseDialog.dialogStyle1(mContext, "是否要保存此编辑？", "保存并退出", "退出", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (view.getId()==R.id.dialog_confirm) {
+                            saveFile(MSG_SAVE_SUCCESS_ADN_FINSH);
+                        }else {
+                            setResult(RESULT_OK);
+                            finish();
+                        }
+                    }
+                });
                 break;
         }
     }
