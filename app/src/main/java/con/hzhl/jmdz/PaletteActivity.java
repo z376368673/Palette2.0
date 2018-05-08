@@ -55,7 +55,7 @@ public class PaletteActivity extends BaseActivity implements View.OnClickListene
     private static final int MSG_DELE_SUCCESS_ADN_FINSH = 4;
     private static final int MSG_SHARE = 5;
     private Handler mHandler;
-    private View setting, close, share, save;
+    private View paint, close, share, save;
 
     private PFile pFile;
     private String fileName="";
@@ -105,13 +105,13 @@ public class PaletteActivity extends BaseActivity implements View.OnClickListene
         mClearView.setOnClickListener(this);
 
 
-        setting = findViewById(R.id.iv_setting);
+        paint = findViewById(R.id.iv_paint);
         close = findViewById(R.id.iv_close);
         share = findViewById(R.id.iv_share);
         save = findViewById(R.id.iv_save);
 
 
-        setting.setOnClickListener(this);
+        paint.setOnClickListener(this);
         close.setOnClickListener(this);
         share.setOnClickListener(this);
         save.setOnClickListener(this);
@@ -229,7 +229,7 @@ public class PaletteActivity extends BaseActivity implements View.OnClickListene
                     }
                 }).start();
                 break;
-            case R.id.iv_setting://设置
+            case R.id.iv_paint://设置
                 StyleDialog styleDialog = new StyleDialog(this);
                 styleDialog.setHandler(mHandler);
                 styleDialog.setSeekBar((int) mPaletteView.getPenRawSize());
