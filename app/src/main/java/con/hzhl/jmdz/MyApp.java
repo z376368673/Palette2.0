@@ -19,6 +19,7 @@ public class MyApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        CrashCatchHandler.getInstance().init(this);
         UMConfigure.init(this,"5aebcce8f29d981c2f0000d3"
                 ,"HaoShare",UMConfigure.DEVICE_TYPE_PHONE,"");
         PlatformConfig.setWeixin("wxcbb0f8a815203783", "5aebcce8f29d981c2f0000d3");

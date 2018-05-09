@@ -21,6 +21,7 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         mActivity = this;
         mContext = this;
+
     }
 
     public void startAct(Class cla){
