@@ -6,7 +6,7 @@
     android:orientation="vertical"
    >
 
-    <con.hzhl.jmdz.PaletteView
+    <con.hzhl.jmdz.old_code.PaletteView
         android:id="@+id/palette"
         android:layout_width="match_parent"
         android:layout_height="0dp"

@@ -45,7 +45,7 @@ public class CollectionListActivity extends BaseActivity implements AdapterView.
 
     GridView gridView;
     CollectAdapter adapter;
-    ImageButton iv_add;
+    ImageView iv_add;
 
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,7 +60,7 @@ public class CollectionListActivity extends BaseActivity implements AdapterView.
      */
     private void initView() {
         gridView = (GridView) findViewById(R.id.gridView);
-        iv_add = (ImageButton) findViewById(R.id.iv_add);
+        iv_add = (ImageView) findViewById(R.id.iv_add);
         adapter = new CollectAdapter(this);
         gridView.setAdapter(adapter);
         gridView.setOnItemClickListener(this);
@@ -97,7 +97,7 @@ public class CollectionListActivity extends BaseActivity implements AdapterView.
         super.onClick(view);
         if (iv_add == view) {
             //startAct(PaletteActivity.class);
-            Intent intent = new Intent(mContext, PaletteActivity.class);
+            Intent intent = new Intent(mContext, BackgroundListActivity.class);
             startActivityForResult(intent, 1001);
         }
 
@@ -114,7 +114,7 @@ public class CollectionListActivity extends BaseActivity implements AdapterView.
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         PFile file = (PFile) adapterView.getAdapter().getItem(i);
-        Intent intent = new Intent(mContext, PaletteActivity.class);
+        Intent intent = new Intent(mContext, DrawPenActivity.class);
         intent.putExtra("name", file.getName());
         intent.putExtra("path", file.getPath());
         startActivityForResult(intent, 1001);

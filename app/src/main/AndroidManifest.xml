@@ -29,9 +29,17 @@
         <activity
             android:name="con.hzhl.jmdz.CollectionListActivity"
             android:screenOrientation="landscape" />
+        <activity
+            android:name="con.hzhl.jmdz.BackgroundListActivity"
+            android:screenOrientation="landscape" />
+
         <activity android:name="con.hzhl.jmdz.MainActivity" />
+
         <activity
             android:name="con.hzhl.jmdz.PaletteActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name="con.hzhl.jmdz.DrawPenActivity"
             android:screenOrientation="landscape" />
 
 

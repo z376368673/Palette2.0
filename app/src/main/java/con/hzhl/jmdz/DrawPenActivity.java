@@ -24,26 +24,22 @@ import com.umeng.socialize.UMShareListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.umeng.socialize.media.UMImage;
 
-import con.hzhl.jmdz.Utils.BaseDialog;
-import con.hzhl.jmdz.Utils.FileData;
-import con.hzhl.jmdz.Utils.PFile;
-import con.hzhl.jmdz.Utils.StyleDialog;
-import con.hzhl.jmdz.Utils.Tools;
-import con.hzhl.jmdz.old_code.PaletteView;
-
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class PaletteActivity extends BaseActivity implements View.OnClickListener, PaletteView.Callback, Handler.Callback {
+import con.hzhl.jmdz.Utils.BaseDialog;
+import con.hzhl.jmdz.Utils.FileData;
+import con.hzhl.jmdz.Utils.PFile;
+import con.hzhl.jmdz.Utils.StyleDialog;
+import con.hzhl.jmdz.Utils.Tools;
+import con.hzhl.jmdz.paint_code.IPenConfig;
+import con.hzhl.jmdz.paint_code.NewDrawPenView;
 
-    private View mUndoView;
-    private View mRedoView;
-    private View mPenView;
-    private View mEraserView;
-    private View mClearView;
-    private PaletteView mPaletteView;
+public class DrawPenActivity extends BaseActivity implements View.OnClickListener, Handler.Callback {
+
+    private NewDrawPenView mPaletteView;
     private static final int MSG_SAVE_SUCCESS = 1;
     private static final int MSG_SAVE_FAILED = 2;
     private static final int MSG_SAVE_SUCCESS_ADN_FINSH = 3;
@@ -58,7 +54,7 @@ public class PaletteActivity extends BaseActivity implements View.OnClickListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         hidBottomUIAndStatus();
-        setContentView(R.layout.activity_palettr);
+        setContentView(R.layout.activity_draw_pen);
         initView();
 
     }
@@ -78,7 +74,7 @@ public class PaletteActivity extends BaseActivity implements View.OnClickListene
             fileName = df.format(new Date());
         }
 
-        mPaletteView = (PaletteView) findViewById(R.id.palette);
+        mPaletteView = (NewDrawPenView) findViewById(R.id.palette);
         if (pFile != null) {
             Bitmap bitmap = BitmapFactory.decodeFile(pFile.getPath());
             Drawable drawable = new BitmapDrawable(bitmap);
@@ -87,21 +83,6 @@ public class PaletteActivity extends BaseActivity implements View.OnClickListene
            int bg =  getIntent().getIntExtra("BG",R.drawable.iv_paint_bg_1);
             mPaletteView.setBackgroundResource(bg);
         }
-        mPaletteView.setCallback(this);
-
-        mUndoView = findViewById(R.id.undo);
-        mRedoView = findViewById(R.id.redo);
-        mPenView = findViewById(R.id.pen);
-        mPenView.setSelected(true);
-        mEraserView = findViewById(R.id.eraser);
-        mClearView = findViewById(R.id.clear);
-
-
-        mUndoView.setOnClickListener(this);
-        mRedoView.setOnClickListener(this);
-        mPenView.setOnClickListener(this);
-        mEraserView.setOnClickListener(this);
-        mClearView.setOnClickListener(this);
 
 
         paint = findViewById(R.id.iv_paint);
@@ -114,11 +95,7 @@ public class PaletteActivity extends BaseActivity implements View.OnClickListene
         close.setOnClickListener(this);
         share.setOnClickListener(this);
         save.setOnClickListener(this);
-
         share.setOnLongClickListener(this);
-
-        mUndoView.setEnabled(false);
-        mRedoView.setEnabled(false);
 
         mHandler = new Handler(this);
     }
@@ -152,11 +129,11 @@ public class PaletteActivity extends BaseActivity implements View.OnClickListene
                 break;
             case 1001: //设置笔的颜色
                 String color = (String) msg.obj;
-                mPaletteView.setPenColor(Color.parseColor(color));
+                mPaletteView.setPaintColor(Color.parseColor(color));
                 break;
             case 1002: //设置笔的粗细
                 int size = (int) msg.obj;
-                mPaletteView.setPenRawSize(size);
+                mPaletteView.setPaintWidth(size);
                 break;
         }
         return true;
@@ -184,39 +161,28 @@ public class PaletteActivity extends BaseActivity implements View.OnClickListene
 
     @Override
     public void onBackPressed() {
-
-        super.onBackPressed();
+        BaseDialog.dialogStyle1(mContext, "是否要保存此编辑？", "保存并退出", "退出", new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (view.getId()==R.id.dialog_confirm) {
+                    saveFile(MSG_SAVE_SUCCESS_ADN_FINSH);
+                }else {
+                    setResult(RESULT_OK);
+                    finish();
+                }
+            }
+        });
+        //super.onBackPressed();
     }
 
-    @Override
-    public void onUndoRedoStatusChanged() {
-        //以前的撤销按钮
-        mUndoView.setEnabled(mPaletteView.canUndo());
-        mRedoView.setEnabled(mPaletteView.canRedo());
-    }
 
     @Override
     public void onClick(View v) {
 
         switch (v.getId()) {
-            case R.id.undo://撤销
-                mPaletteView.undo();
-                break;
-            case R.id.redo://反撤销
-                mPaletteView.redo();
-                break;
-            case R.id.pen://画笔动作
-                v.setSelected(true);
-                mEraserView.setSelected(false);
-                mPaletteView.setMode(PaletteView.Mode.DRAW);
-                break;
-            case R.id.eraser://擦除动作
-                v.setSelected(true);
-                mPenView.setSelected(false);
-                mPaletteView.setMode(PaletteView.Mode.ERASER);
-                break;
             case R.id.clear: //清除
-                mPaletteView.clear();
+                mPaletteView.setCanvasCode(IPenConfig.STROKE_TYPE_ERASER);
+                mPaletteView.setCanvasCode(IPenConfig.STROKE_TYPE_PEN);
                 break;
             case R.id.iv_save://保存
                 saveFile(MSG_SAVE_SUCCESS);
@@ -235,12 +201,10 @@ public class PaletteActivity extends BaseActivity implements View.OnClickListene
             case R.id.iv_paint://设置
                 StyleDialog styleDialog = new StyleDialog(this);
                 styleDialog.setHandler(mHandler);
-                styleDialog.setSeekBar((int) mPaletteView.getPenRawSize());
+                styleDialog.setSeekBar(IPenConfig.PEN_WIDTH);
                 styleDialog.show();
                 break;
             case R.id.iv_close://关闭
-//                setResult(RESULT_OK);
-//                finish();
                 BaseDialog.dialogStyle1(mContext, "是否要保存此编辑？", "保存并退出", "退出", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

@@ -1,4 +1,4 @@
-package con.hzhl.jmdz;
+package con.hzhl.jmdz.old_code;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -10,11 +10,14 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Xfermode;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Created by wensefu on 17-3-21.
@@ -240,12 +243,23 @@ public class PaletteView extends View {
             canvas.drawBitmap(mBufferBitmap, 0, 0, null);
         }
     }
-
+    private float getEventPress(float press){
+        //0.05~0.25,normal 0.15   mDrawSize
+        float width = mDrawSize+press*50;
+        Log.i(TAG,"press:"+press+",width:"+width);
+        return width;
+    }
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         final int action = event.getAction() & MotionEvent.ACTION_MASK;
         final float x = event.getX();
         final float y = event.getY();
+
+        float pressD = event.getPressure();
+//        float width = getEventPress(pressD);
+//        mPaint.setStrokeWidth(width);
+        Log.e("onTouchEvent","x=="+x+",y=="+y+",p=="+pressD);
+
         switch (action) {
             case MotionEvent.ACTION_DOWN:
                 mLastX = x;
@@ -264,6 +278,7 @@ public class PaletteView extends View {
                 if (mMode == Mode.ERASER && !mCanEraser) {
                     break;
                 }
+
                 mBufferCanvas.drawPath(mPath,mPaint);
                 invalidate();
                 mLastX = x;

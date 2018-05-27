@@ -39,7 +39,7 @@ public class Tools {
         }
         if (!appDir.exists())appDir.mkdirs();
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss", Locale.getDefault());
-        String fileName = df.format(new Date())+".jpg";
+        String fileName = df.format(new Date())+".jpeg";
         File file = new File(appDir, fileName);
         FileOutputStream fos = null;
         try {
@@ -85,7 +85,7 @@ public class Tools {
         }
         if (!appDir.exists())appDir.mkdirs();
 
-        File file = new File(appDir, fileName+".jpg");
+        File file = new File(appDir, fileName+".jpeg");
         FileOutputStream fos = null;
         try {
             fos = new FileOutputStream(file);
@@ -128,7 +128,7 @@ public class Tools {
         }
         if (!appDir.exists())appDir.mkdirs();
 
-        File file = new File(appDir, fileName+".jpg");
+        File file = new File(appDir, fileName+".jpeg");
         FileOutputStream fos = null;
         try {
             fos = new FileOutputStream(file);
@@ -157,7 +157,7 @@ public class Tools {
 
 
     /**
-     * 保存图片
+     * 保存分享的图片
      *
      * @param mContext
      * @param bmp
@@ -173,7 +173,7 @@ public class Tools {
             return null;
         }
         if (!appDir.exists())appDir.mkdirs();
-        String fileName = "share_tmp.jpg";
+        String fileName = "share_tmp.jpeg";
         File file = new File(appDir, fileName);
         if (file.exists())file.delete();
         FileOutputStream fos = null;
@@ -181,7 +181,8 @@ public class Tools {
             fos = new FileOutputStream(file);
             bmp.compress(Bitmap.CompressFormat.JPEG, quality, fos);
             fos.flush();
-            return file.getAbsolutePath();
+            fileName = file.getAbsolutePath();
+            return fileName;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

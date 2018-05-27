@@ -7,7 +7,7 @@
 
    >
 
-    <con.hzhl.jmdz.old_code.PaletteView
+    <con.hzhl.jmdz.paint_code.NewDrawPenView
         android:id="@+id/palette"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -16,23 +16,6 @@
         android:layout_alignParentTop="true"
         android:background="@drawable/iv_paint_bg_1" />
 
-    <!--<ImageView-->
-        <!--android:id="@+id/iv_smaller"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_below="@+id/palette"-->
-        <!--android:padding="5dp"-->
-        <!--android:src="@drawable/ic_smaller" />-->
-    <!--<ImageView-->
-        <!--android:id="@+id/iv_setting"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignBottom="@+id/iv_share"-->
-        <!--android:layout_toLeftOf="@+id/iv_share"-->
-        <!--android:layout_toStartOf="@+id/iv_share"-->
-        <!--android:layout_marginEnd="10dp"-->
-        <!--android:layout_marginRight="10dp"-->
-        <!--android:src="@drawable/ic_setting" />-->
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
