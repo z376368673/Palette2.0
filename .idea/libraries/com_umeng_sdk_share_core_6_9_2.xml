@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="com.umeng.sdk:share-core-6.9.2">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.android/build-cache/091f80746c071d7979e554651938d312f0973ca2/output/res" />
+      <root url="jar://$USER_HOME$/.android/build-cache/091f80746c071d7979e554651938d312f0973ca2/output/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.umeng.sdk/share-core/6.9.2/fdcea7db3cff238ea101d8790d581fe96b8c872/share-core-6.9.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
