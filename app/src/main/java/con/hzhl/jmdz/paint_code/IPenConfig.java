@@ -34,5 +34,5 @@ public class IPenConfig {
     //float WIDTH_THRES_MAX = 0.6f;
     public final  static float WIDTH_THRES_MAX = 1f;
     //绘制计算的次数，数值越小计算的次数越多，需要折中
-    public final static  int STEPFACTOR = 7;
+    public final static  int STEPFACTOR = 1;
 }

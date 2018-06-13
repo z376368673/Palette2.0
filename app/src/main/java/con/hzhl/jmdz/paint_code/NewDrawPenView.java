@@ -297,6 +297,12 @@ public class NewDrawPenView extends View {
      * @param width
      */
     public void setPaintWidth(int width){
+        if (width==0)width=1;
+        if (width<10){
+            width = width*2+10;
+        }else {
+              width = width*3;
+        }
         IPenConfig.PEN_WIDTH = width;
         mPaint.setStrokeWidth(IPenConfig.PEN_WIDTH);
         mStokeBrushPen.setPaint(mPaint);

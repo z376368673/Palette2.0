@@ -87,7 +87,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/seekbar_style"
-                android:max="70" />
+                android:max="30" />
         </LinearLayout>
 
     </LinearLayout>

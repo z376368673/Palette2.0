@@ -1,8 +1,8 @@
 <component name="libraryTable">
-  <library name="com.umeng.sdk:share-core-6.9.2">
+  <library name="Gradle: com.umeng.sdk:share-core-6.9.2">
     <CLASSES>
-      <root url="file://$USER_HOME$/.android/build-cache/091f80746c071d7979e554651938d312f0973ca2/output/res" />
-      <root url="jar://$USER_HOME$/.android/build-cache/091f80746c071d7979e554651938d312f0973ca2/output/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.android/build-cache/a058cfd6d2b1014c2324ce70bee3798e01e2d880/output/res" />
+      <root url="jar://$USER_HOME$/.android/build-cache/a058cfd6d2b1014c2324ce70bee3798e01e2d880/output/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

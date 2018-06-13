@@ -69,7 +69,12 @@ public class StyleDialog extends Dialog implements View.OnClickListener,SeekBar.
     }
 
     public void setSeekBar(int progress) {
-        this.progress = progress;
+        if (progress<=30){
+            this.progress = (progress-10)/2;
+        }else {
+            this.progress = progress/3;
+        }
+
         if (seekBar!=null)seekBar.setProgress(progress);
     }
 

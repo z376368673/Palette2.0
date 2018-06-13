@@ -3,6 +3,7 @@ package con.hzhl.jmdz.paint_code;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.util.Log;
 import android.view.MotionEvent;
 
 import java.util.ArrayList;
@@ -105,7 +106,8 @@ public abstract class BasePenExtend extends BasePen {
         ControllerPoint curPoint = new ControllerPoint(mElement.x, mElement.y);
         //如果用笔画的画我的屏幕，记录他宽度的和压力值的乘，但是哇，
         if (mElement.tooltype == MotionEvent.TOOL_TYPE_STYLUS) {
-            mLastWidth = mElement.pressure * mBaseWidth;
+            mLastWidth = mElement.pressure*2 * mBaseWidth;
+            Log.e("pressure","pressure = "+mElement.pressure);
         } else {
             //如果是手指画的，我们取他的0.8
             mLastWidth = 0.8 * mBaseWidth;
@@ -140,7 +142,7 @@ public abstract class BasePenExtend extends BasePen {
         //点的集合少，我们得必须改变宽度,每次点击的down的时候，这个事件
         if (mPointList.size() < 2) {
             if (mElement.tooltype == MotionEvent.TOOL_TYPE_STYLUS) {
-                curWidth = mElement.pressure * mBaseWidth;
+                curWidth = mElement.pressure*2 * mBaseWidth;
             } else {
                 curWidth = calcNewWidth(curVel, mLastVel, curDis, 1.5,
                         mLastWidth);
@@ -150,7 +152,7 @@ public abstract class BasePenExtend extends BasePen {
         } else {
             mLastVel = curVel;
             if (mElement.tooltype == MotionEvent.TOOL_TYPE_STYLUS) {
-                curWidth = mElement.pressure * mBaseWidth;
+                curWidth = mElement.pressure*2 * mBaseWidth;
             } else {
                 //由于我们手机是触屏的手机，滑动的速度也不慢，所以，一般会走到这里来
                 //阐明一点，当滑动的速度很快的时候，这个值就越小，越慢就越大，依靠着mlastWidth不断的变换
@@ -181,7 +183,7 @@ public abstract class BasePenExtend extends BasePen {
         double curDis = Math.hypot(deltaX, deltaY);
         //如果用笔画的画我的屏幕，记录他宽度的和压力值的乘，但是哇，这个是不会变的
         if (mElement.tooltype == MotionEvent.TOOL_TYPE_STYLUS) {
-            mCurPoint.width = (float) (mElement.pressure * mBaseWidth);
+            mCurPoint.width = (float) (mElement.pressure*2 * mBaseWidth);
         } else {
             mCurPoint.width = 0;
         }

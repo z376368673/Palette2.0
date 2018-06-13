@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Gradle: com.umeng.sdk:share-wechat-6.9.2">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.android/build-cache/76abdada43f695f20a97ab9297c18d9eadd753d7/output/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.android/build-cache/76abdada43f695f20a97ab9297c18d9eadd753d7/output/res" />
+      <root url="jar://$USER_HOME$/.android/build-cache/76abdada43f695f20a97ab9297c18d9eadd753d7/output/jars/libs/wechat-sdk-android-without-mta-5.1.4.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.umeng.sdk/share-wechat/6.9.2/fdcea7db3cff238ea101d8790d581fe96b8c872/share-wechat-6.9.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

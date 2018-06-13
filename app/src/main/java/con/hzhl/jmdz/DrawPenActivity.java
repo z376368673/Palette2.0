@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -39,6 +40,7 @@ import con.hzhl.jmdz.paint_code.NewDrawPenView;
 
 public class DrawPenActivity extends BaseActivity implements View.OnClickListener, Handler.Callback {
 
+    private static final String TAG = "TAG";
     private NewDrawPenView mPaletteView;
     private static final int MSG_SAVE_SUCCESS = 1;
     private static final int MSG_SAVE_FAILED = 2;
@@ -49,10 +51,15 @@ public class DrawPenActivity extends BaseActivity implements View.OnClickListene
     private View paint, close, share, save;
 
     private PFile pFile;
-    private String fileName="";
+    private String fileName = "";
+    private Bitmap currentBitmap = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            currentBitmap = savedInstanceState.getParcelable("CurrentBitmap");
+        }
         hidBottomUIAndStatus();
         setContentView(R.layout.activity_draw_pen);
         initView();
@@ -69,21 +76,27 @@ public class DrawPenActivity extends BaseActivity implements View.OnClickListene
 
         if (!TextUtils.isEmpty(name) && !TextUtils.isEmpty(path)) {
             pFile = new PFile(name, path);
-        }else {
+        } else {
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss", Locale.getDefault());
             fileName = df.format(new Date());
         }
 
         mPaletteView = (NewDrawPenView) findViewById(R.id.palette);
+        //如果是编辑修改某个界面，则加载此界面的文件
         if (pFile != null) {
             Bitmap bitmap = BitmapFactory.decodeFile(pFile.getPath());
             Drawable drawable = new BitmapDrawable(bitmap);
             mPaletteView.setBackground(drawable);
-        }else {
-           int bg =  getIntent().getIntExtra("BG",R.drawable.iv_paint_bg_1);
+        } else {
+            //如果是新建的界面，则根据选择的背景创建界面
+            int bg = getIntent().getIntExtra("BG", R.drawable.iv_paint_bg_1);
             mPaletteView.setBackgroundResource(bg);
         }
-
+            // 因为分享导致屏幕旋转 取出旋转之前的界面 复制给本view
+        if (currentBitmap != null) {
+            Drawable drawable = new BitmapDrawable(currentBitmap);
+            mPaletteView.setBackground(drawable);
+        }
 
         paint = findViewById(R.id.iv_paint);
         close = findViewById(R.id.iv_close);
@@ -114,13 +127,13 @@ public class DrawPenActivity extends BaseActivity implements View.OnClickListene
                 //Toast.makeText(this, "保存成功", Toast.LENGTH_SHORT).show();
                 setResult(RESULT_OK);
                 finish();
-                case MSG_DELE_SUCCESS_ADN_FINSH://删除成功 退出
+            case MSG_DELE_SUCCESS_ADN_FINSH://删除成功 退出
                 //Toast.makeText(this, "删除成功", Toast.LENGTH_SHORT).show();
                 setResult(RESULT_OK);
                 finish();
                 break;
             case MSG_SHARE: //
-                String path  = (String) msg.obj;
+                String path = (String) msg.obj;
                 //shareDialog(new File(path));
                 Intent imageIntent = new Intent(Intent.ACTION_SEND);
                 imageIntent.setType("image/*");
@@ -139,8 +152,10 @@ public class DrawPenActivity extends BaseActivity implements View.OnClickListene
         return true;
     }
 
+
     /**
      * 保存文件
+     *
      * @param type
      */
     private void saveFile(final int type) {
@@ -149,8 +164,9 @@ public class DrawPenActivity extends BaseActivity implements View.OnClickListene
             public void run() {
                 // 保存图片有问题 saveas 这里有问题
                 Bitmap bm = mPaletteView.buildBitmap();
+                currentBitmap = bm;
                 if (pFile == null) {
-                    Tools.savesImage(mContext, fileName,bm, 100);
+                    Tools.savesImage(mContext, fileName, bm, 100);
                 } else {
                     Tools.savesImage(mContext, pFile.getName(), bm, 100);
                 }
@@ -159,14 +175,37 @@ public class DrawPenActivity extends BaseActivity implements View.OnClickListene
         }).start();
     }
 
+    /**
+     * 退出保存文件 需要延迟保存，不然dialog的存在会导致界面变形
+     *
+     * @param type
+     */
+    private void saveFile1(final int type) {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                // 保存图片有问题 saveas 这里有问题
+                Bitmap bm = mPaletteView.buildBitmap();
+                currentBitmap = bm;
+                if (pFile == null) {
+                    Tools.savesImage(mContext, fileName, bm, 100);
+                } else {
+                    Tools.savesImage(mContext, pFile.getName(), bm, 100);
+                }
+                mHandler.sendEmptyMessage(type);
+            }
+        }, 1500);
+
+    }
+
     @Override
     public void onBackPressed() {
         BaseDialog.dialogStyle1(mContext, "是否要保存此编辑？", "保存并退出", "退出", new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (view.getId()==R.id.dialog_confirm) {
-                    saveFile(MSG_SAVE_SUCCESS_ADN_FINSH);
-                }else {
+                if (view.getId() == R.id.dialog_confirm) {
+                    saveFile1(MSG_SAVE_SUCCESS_ADN_FINSH);
+                } else {
                     setResult(RESULT_OK);
                     finish();
                 }
@@ -174,7 +213,6 @@ public class DrawPenActivity extends BaseActivity implements View.OnClickListene
         });
         //super.onBackPressed();
     }
-
 
     @Override
     public void onClick(View v) {
@@ -189,12 +227,14 @@ public class DrawPenActivity extends BaseActivity implements View.OnClickListene
                 break;
             case R.id.iv_share: //分享
                 //异步生成图片，弹出分享框
+               // saveFile(MSG_SAVE_SUCCESS);
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
                         Bitmap bm = mPaletteView.buildBitmap();
+                        currentBitmap = bm;
                         String path = Tools.buildImage(mContext, bm, 50);
-                        mHandler.obtainMessage(MSG_SHARE,path).sendToTarget();
+                        mHandler.obtainMessage(MSG_SHARE, path).sendToTarget();
                     }
                 }).start();
                 break;
@@ -208,9 +248,9 @@ public class DrawPenActivity extends BaseActivity implements View.OnClickListene
                 BaseDialog.dialogStyle1(mContext, "是否要保存此编辑？", "保存并退出", "退出", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if (view.getId()==R.id.dialog_confirm) {
-                            saveFile(MSG_SAVE_SUCCESS_ADN_FINSH);
-                        }else {
+                        if (view.getId() == R.id.dialog_confirm) {
+                            saveFile1(MSG_SAVE_SUCCESS_ADN_FINSH);
+                        } else {
                             setResult(RESULT_OK);
                             finish();
                         }
@@ -220,83 +260,13 @@ public class DrawPenActivity extends BaseActivity implements View.OnClickListene
         }
     }
 
-
+    //分享导致的屏幕旋转，所以保存分享之前的图片
     @Override
-    public boolean onLongClick(View view) {
-        if (view==share){
-//            //异步生成图片，弹出分享框
-//            new Thread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    Bitmap bm = mPaletteView.buildBitmap();
-//                    String path = Tools.saveImage(mContext, bm, 50);
-//                    mHandler.obtainMessage(MSG_SHARE,path).sendToTarget();
-//                }
-//            }).start();
-
-//            String path = getResourcesUri(R.drawable.shu_1);
-//            Intent imageIntent = new Intent(Intent.ACTION_SEND);
-//            imageIntent.setType("image/jpeg");
-//            imageIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(path));
-//            startActivity(Intent.createChooser(imageIntent, "分享"));
-
-//            Intent textIntent = new Intent(Intent.ACTION_SEND);
-//            textIntent.setType("text/plain");
-//            textIntent.putExtra(Intent.EXTRA_TEXT, "这是一段分享的文字");
-//            startActivity(Intent.createChooser(textIntent, "分享"));
-            return true;
-        }
-        return false;
-    }
-
-
-    /**
-     * 分享
-     *
-     */
-    public  void shareDialog( File file) {
-        final UMImage image = new UMImage(mActivity, file);//本地文件
-        image.compressStyle = UMImage.CompressStyle.SCALE;//大小压缩，默认为大小压缩，适合普通很大的图
-        image.compressStyle = UMImage.CompressStyle.QUALITY;//质量压缩，适合长图的分享
-
-        View view = LayoutInflater.from(mActivity).inflate(R.layout.dialog_share, null, false);
-        TextView wechat1 = (TextView) view.findViewById(R.id.wechat1);
-        final TextView wechat2 = (TextView) view.findViewById(R.id.wechat2);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-        builder.setView(view)
-                .setCancelable(true);
-        final AlertDialog dialog = builder.create();
-        //dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.show();
-        View.OnClickListener onClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-                if (view==wechat2){
-                    //new ShareAction(mActivity).withText("好笔记").withMedia(image).share();
-                    new ShareAction(mActivity).setCallback(shareListener).setPlatform(SHARE_MEDIA.WEIXIN_CIRCLE).withMedia(image).share();
-                }else {
-                    new ShareAction(mActivity).setCallback(shareListener).setPlatform(SHARE_MEDIA.WEIXIN).withMedia(image).share();
-                }
-            }
-        };
-        wechat1.setOnClickListener(onClickListener);
-        wechat2.setOnClickListener(onClickListener);
-    }
-
-    private void delect(){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                boolean isdelect = new FileData(mContext).delectFile(pFile);
-                if (isdelect)
-                    mHandler.sendEmptyMessage(MSG_DELE_SUCCESS_ADN_FINSH);
-                else {
-                    Toast.makeText(mContext, "删除失败", Toast.LENGTH_SHORT).show();
-                }
-            }
-        }).start();
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        //outState.putString("SharePath", sharePath);
+        outState.putParcelable("CurrentBitmap", currentBitmap);
+        Log.e(TAG, "onSaveInstanceState: currentBitmap = " + currentBitmap.getByteCount());
     }
 
     @Override
@@ -304,6 +274,18 @@ public class DrawPenActivity extends BaseActivity implements View.OnClickListene
         super.onDestroy();
         mHandler.removeMessages(MSG_SAVE_FAILED);
         mHandler.removeMessages(MSG_SAVE_SUCCESS);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.e(TAG, "onPause");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.e(TAG, "onResume");
     }
 
     //隐藏虚拟按键，并且全屏
@@ -315,43 +297,9 @@ public class DrawPenActivity extends BaseActivity implements View.OnClickListene
         _window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         //去掉虚拟按键全屏显示
         WindowManager.LayoutParams params = _window.getAttributes();
-        params.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE| View.INVISIBLE ;
-        params.type = WindowManager.LayoutParams.TYPE_STATUS_BAR_PANEL|WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
+        params.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE | View.INVISIBLE;
+        params.type = WindowManager.LayoutParams.TYPE_STATUS_BAR_PANEL | WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
         _window.setAttributes(params);
     }
-    private UMShareListener shareListener = new UMShareListener() {
-        /**
-         * @descrption 分享开始的回调
-         * @param platform 平台类型
-         */
-        @Override
-        public void onStart(SHARE_MEDIA platform) {
-        }
-        /**
-         * @descrption 分享成功的回调
-         * @param platform 平台类型
-         */
-        @Override
-        public void onResult(SHARE_MEDIA platform) {
-            Toast.makeText(mActivity,"分享成功",Toast.LENGTH_LONG).show();
-        }
-        /**
-         * @descrption 分享失败的回调
-         * @param platform 平台类型
-         * @param t 错误原因
-         */
-        @Override
-        public void onError(SHARE_MEDIA platform, Throwable t) {
-            Toast.makeText(mActivity,"分享失败"+t.getMessage(),Toast.LENGTH_LONG).show();
-        }
-        /**
-         * @descrption 分享取消的回调
-         * @param platform 平台类型
-         */
-        @Override
-        public void onCancel(SHARE_MEDIA platform) {
-            Toast.makeText(mActivity,"分享取消",Toast.LENGTH_LONG).show();
-        }
-    };
 
 }
