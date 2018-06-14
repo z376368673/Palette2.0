@@ -24,7 +24,7 @@ public class IPenConfig {
     public final  static int STROKE_TYPE_BRUSH = 2;// 毛笔
 
     //设置笔的宽度
-    public static int PEN_WIDTH=3;
+    public static int PEN_WIDTH=4;
     //笔的颜色
     public static int PEN_CORLOUR= Color.parseColor("#000000");
 
@@ -35,4 +35,8 @@ public class IPenConfig {
     public final  static float WIDTH_THRES_MAX = 1f;
     //绘制计算的次数，数值越小计算的次数越多，需要折中
     public final static  int STEPFACTOR = 1;
+
+    //计算压感的偏移因素
+    public final static  float PRESSURE = 3f;
+
 }

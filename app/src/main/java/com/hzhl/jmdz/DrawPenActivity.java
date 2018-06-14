@@ -100,10 +100,11 @@ public class DrawPenActivity extends BaseActivity implements View.OnClickListene
         share.setOnClickListener(this);
         save.setOnClickListener(this);
         share.setOnLongClickListener(this);
-
+        styleDialog = new StyleDialog(this);
         mHandler = new Handler(this);
+        styleDialog.setHandler(mHandler);
     }
-
+    StyleDialog styleDialog;
 
     @Override
     public boolean handleMessage(Message msg) {
@@ -230,8 +231,6 @@ public class DrawPenActivity extends BaseActivity implements View.OnClickListene
                 }).start();
                 break;
             case R.id.iv_paint://设置
-                StyleDialog styleDialog = new StyleDialog(this);
-                styleDialog.setHandler(mHandler);
                 styleDialog.setSeekBar(IPenConfig.PEN_WIDTH);
                 styleDialog.show();
                 break;
@@ -259,6 +258,8 @@ public class DrawPenActivity extends BaseActivity implements View.OnClickListene
         if (currentBitmap!=null){
             outState.putParcelable("CurrentBitmap", currentBitmap);
             Log.e(TAG, "onSaveInstanceState: currentBitmap = " + currentBitmap.getByteCount());
+        }else {
+            Log.e(TAG, "onSaveInstanceState: currentBitmap = " + currentBitmap);
         }
     }
 

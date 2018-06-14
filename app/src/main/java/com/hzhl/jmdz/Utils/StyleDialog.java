@@ -25,7 +25,7 @@ public class StyleDialog extends Dialog implements View.OnClickListener, SeekBar
     private LinearLayout ll_style;
     private View color1, color2, color3, color4, color5, color6;
     private SeekBar seekBar;
-    private int progress = 0;
+    private int progress = 1;
     private Handler handler;
     Context context;
 
@@ -72,8 +72,13 @@ public class StyleDialog extends Dialog implements View.OnClickListener, SeekBar
         if (progress == 0) {
             progress = 1;
         }
-        progress = (progress-1)/ 2;
-        if (seekBar != null) seekBar.setProgress(progress);
+        progress =progress - 3;
+        if (seekBar != null){
+            seekBar.setProgress(progress);
+            Log.e("setSeekBar","progress = "+progress);
+        } else {
+            Log.e("setSeekBar","seekBar = "+seekBar);
+        }
     }
 
     public void setHandler(Handler handler) {

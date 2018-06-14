@@ -20,6 +20,7 @@ android {
         def filePath = 'hao.jks'
         debug {
             keyAlias alias
+            
             keyPassword password
             storeFile file(filePath)
             storePassword(passwordStore)
