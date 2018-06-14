@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Palette.iml" filepath="$PROJECT_DIR$/Palette.iml" />
+      <module fileurl="file://E:\AndroidWork\Palette2.0\Palette.iml" filepath="E:\AndroidWork\Palette2.0\Palette.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Palette2.0.iml" filepath="$PROJECT_DIR$/Palette2.0.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

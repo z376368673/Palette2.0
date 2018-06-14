@@ -7,7 +7,7 @@
 
    >
 
-    <con.hzhl.jmdz.old_code.PaletteView
+    <com.hzhl.jmdz.old_code.PaletteView
         android:id="@+id/palette"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

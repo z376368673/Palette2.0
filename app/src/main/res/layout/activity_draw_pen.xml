@@ -4,10 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
+    android:paddingLeft="8dp"
 
    >
-
-    <con.hzhl.jmdz.paint_code.NewDrawPenView
+    <com.hzhl.jmdz.paint_code.NewDrawPenView
         android:id="@+id/palette"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
